@@ -54,17 +54,17 @@ class PriceList extends Model
 
     public function scopeForReimbursementType($query, int $typeId)
     {
-        return $query->where('price_lists.reimbursement_type_id', $typeId);
+        return $query->where($this->table . '.reimbursement_type_id', $typeId);
     }
 
     public function scopeForClinic($query, int $clinicId)
     {
-        return $query->where('price_lists.clinic_id', $clinicId);
+        return $query->where( $this->table . '.clinic_id', $clinicId);
     }
 
     public function scopeUsed($query, bool $isUsed = true)
     {
-        return $query->where('price_lists.used', $isUsed);
+        return $query->where($this->table . '.used', $isUsed);
     }
 
     public function scopeOptions($query)
