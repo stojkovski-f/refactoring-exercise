@@ -47,8 +47,8 @@ class PriceController extends ApiBaseController
     /**
      * Builds an array of List IDs from request parameters.
      *
-     * @param  \Illuminate\\Http\Request  $request
-     * @return array
+     * @param  \Illuminate\Http\Request  $request
+     * @return \App\Models\TenantPriceList[]
      */
     private function buildListsArrayFromRequestParams(Request $request){
 
@@ -56,7 +56,6 @@ class PriceController extends ApiBaseController
 
         if ($request->has('list_id')) {
             $lists[] = $request->get('list_id');
-            return $lists;
         }
 
         if ($request->has('list_ids')) {
@@ -64,16 +63,22 @@ class PriceController extends ApiBaseController
             foreach ( $request->array('list_ids') as $key => $listId ){
                 $lists[] = $listId;
             }
-            return $lists;
         }
 
         if ($request->has('reimbursement_type_id')) {
             $query = TenantPriceList::forReimbursementType($request->get('reimbursement_type_id'))
                 ->used();
             if ($priceList = $query->first()) {
-                $lists[] = $priceList->id;
+                $lists[] = $priceList;
+                return $lists;
             }
         }
+
+        if(empty($lists)){
+            return $lists;
+        }
+
+        $lists = TenantPriceList::whereIn(’id’,$lists);
         return $lists;
     }
 
